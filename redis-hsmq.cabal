@@ -1,0 +1,48 @@
+-- This file has been generated from package.yaml by hpack version 0.28.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 17e45fd68737268f5d4c30b6540f96153dd67bd065657cff0153cd3afbb7b96c
+
+name:           redis-hsmq
+version:        0.1
+description:    See README.md
+category:       System
+author:         Tiago <tiago.loureiro@gmail.com>, Matthias <mf@zerobuzz.net>
+maintainer:     Tiago <tiago.loureiro@gmail.com>, Matthias <mf@zerobuzz.net>
+copyright:      (c) 2018 Tiago <tiago.loureiro@gmail.com>
+license:        Mozilla
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+executable toy-sp
+  main-is: Main.hs
+  other-modules:
+      Paths_redis_hsmq
+  hs-source-dirs:
+      src
+  ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs -Werror
+  build-depends:
+      base
+    , redis-io
+    , redis-resp
+  default-language: Haskell2010
+
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_redis_hsmq
+  hs-source-dirs:
+      test
+  ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs -Werror -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base
+    , hedgehog
+    , hspec
+    , hspec-discover
+    , redis-hsmq
+    , redis-io
+    , redis-resp
+  default-language: Haskell2010

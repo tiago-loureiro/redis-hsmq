@@ -1,0 +1,40 @@
+name:          redis-hsmq
+version:       '0.1'
+synopsis:      ''
+author:        Tiago <tiago.loureiro@gmail.com>, Matthias <mf@zerobuzz.net>
+maintainer:    Tiago <tiago.loureiro@gmail.com>, Matthias <mf@zerobuzz.net>
+copyright:     (c) 2018 Tiago <tiago.loureiro@gmail.com>
+license:       Mozilla
+license-file:  LICENSE
+category:      System
+description:   'See README.md'
+
+ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs -Werror
+
+dependencies:
+  - base
+  - redis-io
+  - redis-resp
+#  - aeson
+
+#library:
+#  source-dirs:
+#    - src
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - test
+    ghc-options: -threaded -rtsopts -with-rtsopts=-N
+    dependencies:
+      - redis-hsmq
+      - hedgehog
+      - hspec
+      - hspec-discover
+
+executables:
+  toy-sp:
+    main: Main.hs
+    source-dirs: src
+    dependencies: []
