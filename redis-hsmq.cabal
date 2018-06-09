@@ -1,8 +1,8 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+-- This file has been generated from package.yaml by hpack version 0.20.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 17e45fd68737268f5d4c30b6540f96153dd67bd065657cff0153cd3afbb7b96c
+-- hash: 0a5e8c5e82f603bb26b301d884491da9072c5488a695d17b088a3d0fdc899938
 
 name:           redis-hsmq
 version:        0.1
@@ -18,31 +18,40 @@ cabal-version:  >= 1.10
 
 executable toy-sp
   main-is: Main.hs
-  other-modules:
-      Paths_redis_hsmq
   hs-source-dirs:
       src
-  ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs -Werror
+  ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs
   build-depends:
       base
+    , bytestring
+    , bytestring-conversion
     , redis-io
     , redis-resp
+    , text
+    , tinylog
+  other-modules:
+      RedisHSMQ.IO
+      RedisHSMQ.Types
+      Paths_redis_hsmq
   default-language: Haskell2010
 
 test-suite spec
   type: exitcode-stdio-1.0
   main-is: Spec.hs
-  other-modules:
-      Paths_redis_hsmq
   hs-source-dirs:
       test
-  ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs -Werror -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base
+    , bytestring
+    , bytestring-conversion
     , hedgehog
     , hspec
     , hspec-discover
-    , redis-hsmq
     , redis-io
     , redis-resp
+    , text
+    , tinylog
+  other-modules:
+      Paths_redis_hsmq
   default-language: Haskell2010

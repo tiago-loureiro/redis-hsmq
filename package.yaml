@@ -9,12 +9,17 @@ license-file:  LICENSE
 category:      System
 description:   'See README.md'
 
-ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs -Werror
+ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs # -Werror
 
 dependencies:
   - base
+  - bytestring-conversion
+  - bytestring
   - redis-io
   - redis-resp
+  - text
+  - tinylog
+
 #  - aeson
 
 #library:
@@ -28,7 +33,6 @@ tests:
       - test
     ghc-options: -threaded -rtsopts -with-rtsopts=-N
     dependencies:
-      - redis-hsmq
       - hedgehog
       - hspec
       - hspec-discover

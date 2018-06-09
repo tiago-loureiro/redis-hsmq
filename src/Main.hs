@@ -1,16 +1,24 @@
+{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
+import Control.Monad.IO.Class
 import Database.Redis.IO
+import RedisHSMQ.IO
+import RedisHSMQ.Types
 
+import qualified System.Logger as Logger
 
--- https://redis.io/commands/lpush
-lpush :: _
+main :: IO ()
+main = do
+    g <- Logger.new Logger.defSettings
+    p <- mkPool g (setHost "localhost" defSettings)
+    runRedis p $ commands $ enqueue dummyQueue >> empty
+  where
+    dummyQueue = QueueName "dummy"
 
--- https://redis.io/commands/rpoplpush
-brpoplpush :: _
-
-
-
--- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_CreateQueue.html
--- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html
--- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html
+    empty =
+        pop dummyQueue >>= \case
+            Just v  -> liftIO (print v) >> empty
+            Nothing -> return ()
