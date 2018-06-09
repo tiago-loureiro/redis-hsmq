@@ -1,0 +1,39 @@
+data Message = Message
+  { _msgId :: Int
+  , _msgBody :: Text
+  }
+
+type MessageStatus = MessageEndOfLife UTCTime | ReadyToJump
+
+-- Q:    waiting 'Message's
+-- PQ:   'Message's being processed.
+-- <id>: 'MessageStatus' of message with msgId <id> (usually in PQ).
+
+-- GC round: move dead messages from PQ to Q.
+len <- LLEN(PQ)
+for [0..len-1] $ \ix -> do
+  msg :: Message <- LINDEX(ix)
+  MessageEndOfLife endoflife
+     <- LINDEX(msg ^. msgId, 0)
+        -- we may have to try this a few times if it's just been added to P.
+        -- this will always be a end-of-life unless PQ has not been cleaned up after the last crash.
+
+  when (endoflife < now) $ do
+    -- mark the beginning of the "transaction" that moves msg from inside PQ to the jump position in PQ.
+    LSET(msg ^. msgId, 0, ReadyToJump)
+    -- push msg with to end of queue and set it to waiting.
+    RPUSH(PQ, msg)
+    -- remove it from its original place.
+    LREM(PQ, msg)
+    -- "transaction" complete!
+    LSET(msg ^. msgId, 0, MessageEndOfLife endoflife)  -- (in case we crash before the BRPOPLPUSH step that is coming next.)
+    -- atomically move message back to Q.
+    BRPOPLPUSH(...)
+
+-- after crash recovery, GC needs to go through PQ.  for each message, check if it is in state
+-- 'ReadyToJump'.  if that is the case, check if it has two occurraces in PQ.  if that is the case,
+-- remove it from the jump position and set a near end-of-life.
+--
+-- without the 'ReadyToJump'-based "implementation" of "transactions", we would have a message
+-- duplicate for each time GC crashes between writing the message to the right end of the queue and
+-- removing it from the middle.
