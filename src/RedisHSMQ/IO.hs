@@ -2,11 +2,8 @@
 
 module RedisHSMQ.IO where
 
-import Data.ByteString (ByteString)
-import Data.ByteString.Conversion
 import Database.Redis.IO
 import Data.Int
-import Data.List.NonEmpty
 
 import RedisHSMQ.Types
 
@@ -17,11 +14,11 @@ enqueue n m = lpush (toKey n) (m :| [])
 
 -- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html
 -- https://redis.io/commands/rpoplpush
-pop :: Monad m => QueueName -> Redis m (Maybe Message)
-pop n = brpoplpush (toKey n) "worker" (Seconds 0)
+pop :: Monad m => QueueName -> VisibilityTimeout -> Redis m (Maybe Message)
+pop n _ = brpoplpush (toKey n) "worker" (Seconds 0)
 
-pop' :: Monad m => QueueName -> Seconds -> Redis m (Maybe Message)
-pop' n s = brpoplpush (toKey n) "worker" s
+pop' :: Monad m => QueueName -> Seconds -> VisibilityTimeout -> Redis m (Maybe Message)
+pop' n s _ = brpoplpush (toKey n) "worker" s
 
 -- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_CreateQueue.html
 -- TODO: Check that this queue already exists

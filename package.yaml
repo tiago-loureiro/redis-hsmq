@@ -13,16 +13,23 @@ ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs # -Werror
 
 dependencies:
   - aeson
+  - async
   - base
   - bytestring-conversion
   - bytestring
   - exceptions
+  - http-client
   - redis-io
   - redis-resp
+  - servant
+  - servant-server
+  - servant-client
+  - stm
   - text
+  - transformers
+  - time
   - tinylog
-
-#  - aeson
+  - warp
 
 #library:
 #  source-dirs:

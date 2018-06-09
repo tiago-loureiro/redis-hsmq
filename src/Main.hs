@@ -3,33 +3,44 @@
 
 module Main where
 
+import Control.Concurrent
 import Control.Monad.Catch
 import Control.Monad.IO.Class
 import Database.Redis.IO
 import RedisHSMQ.IO
+import RedisHSMQ.Server
 import RedisHSMQ.Types as RT
 
-import qualified System.Logger as Logger
+import qualified Control.Concurrent.Async as Async
 
 main :: IO ()
 main = do
-    g <- Logger.new Logger.defSettings
-    p <- mkPool g (setHost "localhost" defSettings)
+    e <- mkEnv
+    m <- Async.async $ runMonitor
+    _ <- forkIO $ runRandomClient (redis e)
+    startServer e `finally` do
+        Async.cancel m
+        stopServer e
+    print ("Exited!" :: String)
+  where
+    runMonitor = threadDelay 1000000 >> runMonitor
+
+runRandomClient :: Pool -> IO ()
+runRandomClient p = do
     ret <- try $ runRedis p $ commands $ do
-            enqueue dummyQueue (RT.Message "foo" "bar")
-            enqueue dummyQueue (RT.Message "foo" "baz")
-            empty
+                _ <- enqueue dummyQueue (RT.Message "foo" "bar")
+                _ <- enqueue dummyQueue (RT.Message "foo" "baz")
+                emptyQueue
     case ret of
-        Left e  -> print (e :: SomeException)
+        Left  e -> print (e :: SomeException)
         Right r -> print r
-    runRedis p $ commands $ do
-        liftIO $ print "In process: "
-        inProcess >>= liftIO . print
+    runRedis p $ commands $ inProcess >>= liftIO . print
   where
     dummyQueue = QueueName "dummy"
 
-    empty = do
-        val <- pop' dummyQueue (Seconds 1)
+    emptyQueue = do
+        val <- pop' dummyQueue (Seconds 1) (VisibilityTimeout 5)
         case val of
-            (Just v) -> liftIO (print v) >> empty
+            (Just v) -> liftIO (print v) >> emptyQueue
             Nothing  -> return ()
+
