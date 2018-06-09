@@ -12,6 +12,7 @@ description:   'See README.md'
 ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs # -Werror
 
 dependencies:
+  - aeson
   - base
   - bytestring-conversion
   - bytestring

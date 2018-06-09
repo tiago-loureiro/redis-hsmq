@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0a5e8c5e82f603bb26b301d884491da9072c5488a695d17b088a3d0fdc899938
+-- hash: a9257c703c1c805b00d05c1eb9eb96bca5cebc61e76b5472063af7980eb0d35e
 
 name:           redis-hsmq
 version:        0.1
@@ -22,7 +22,8 @@ executable toy-sp
       src
   ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs
   build-depends:
-      base
+      aeson
+    , base
     , bytestring
     , bytestring-conversion
     , redis-io
@@ -42,7 +43,8 @@ test-suite spec
       test
   ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base
+      aeson
+    , base
     , bytestring
     , bytestring-conversion
     , hedgehog
