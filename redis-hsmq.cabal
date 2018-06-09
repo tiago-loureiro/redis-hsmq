@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a9257c703c1c805b00d05c1eb9eb96bca5cebc61e76b5472063af7980eb0d35e
+-- hash: ac609df292551011b3cf75718e1ae440749a579ae16f7e3b60b6da97a41a437d
 
 name:           redis-hsmq
 version:        0.1
@@ -26,6 +26,7 @@ executable toy-sp
     , base
     , bytestring
     , bytestring-conversion
+    , exceptions
     , redis-io
     , redis-resp
     , text
@@ -47,6 +48,7 @@ test-suite spec
     , base
     , bytestring
     , bytestring-conversion
+    , exceptions
     , hedgehog
     , hspec
     , hspec-discover

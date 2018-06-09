@@ -27,3 +27,7 @@ pop' n s = brpoplpush (toKey n) "worker" s
 -- TODO: Check that this queue already exists
 createQueue :: Monad m => QueueName -> m QueueURL
 createQueue (QueueName n) = return $ QueueURL n
+
+-- Get the messages currently being processed
+inProcess :: Monad m => Redis m [Message]
+inProcess = lrange "worker" 0 (-1)
