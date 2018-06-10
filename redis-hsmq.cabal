@@ -1,8 +1,8 @@
--- This file has been generated from package.yaml by hpack version 0.20.0.
+-- This file has been generated from package.yaml by hpack version 0.28.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 17fe6dcbb7e7e6db3b898b6d744b0f29bf41aab4737fcf7b6cd1c7b161a1eaf1
+-- hash: bc2ed52ca1c4be65810935cbe9d4db3e01badc3bc52307af79e9cec7bb349c50
 
 name:           redis-hsmq
 version:        0.1
@@ -35,6 +35,7 @@ executable toy-sp
     , servant-client
     , servant-server
     , stm
+    , string-conversions
     , text
     , time
     , tinylog
@@ -42,6 +43,7 @@ executable toy-sp
     , warp
   other-modules:
       RedisHSMQ.IO
+      RedisHSMQ.Monitor
       RedisHSMQ.Server
       RedisHSMQ.Types
       Paths_redis_hsmq
@@ -70,6 +72,7 @@ test-suite spec
     , servant-client
     , servant-server
     , stm
+    , string-conversions
     , text
     , time
     , tinylog

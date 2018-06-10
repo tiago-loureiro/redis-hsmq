@@ -25,6 +25,7 @@ dependencies:
   - servant-server
   - servant-client
   - stm
+  - string-conversions
   - text
   - transformers
   - time

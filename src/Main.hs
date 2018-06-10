@@ -9,6 +9,7 @@ import Control.Monad.IO.Class
 import Database.Redis.IO
 import RedisHSMQ.IO
 import RedisHSMQ.Server
+import RedisHSMQ.Monitor
 import RedisHSMQ.Types as RT
 
 import qualified Control.Concurrent.Async as Async
@@ -16,20 +17,19 @@ import qualified Control.Concurrent.Async as Async
 main :: IO ()
 main = do
     e <- mkEnv
-    m <- Async.async $ runMonitor
+    m <- Async.async $ runMonitor (redis e)
     _ <- forkIO $ runRandomClient (redis e)
     startServer e `finally` do
         Async.cancel m
         stopServer e
     print ("Exited!" :: String)
-  where
-    runMonitor = threadDelay 1000000 >> runMonitor
 
 runRandomClient :: Pool -> IO ()
 runRandomClient p = do
+    let timeout = VisibilityTimeout 20
     ret <- try $ runRedis p $ commands $ do
-                _ <- enqueue dummyQueue (RT.Message "foo" "bar")
-                _ <- enqueue dummyQueue (RT.Message "foo" "baz")
+                _ <- enqueue dummyQueue (RT.Message "foo" "bar" timeout)
+                _ <- enqueue dummyQueue (RT.Message "foo" "baz" timeout)
                 emptyQueue
     case ret of
         Left  e -> print (e :: SomeException)
@@ -43,4 +43,3 @@ runRandomClient p = do
         case val of
             (Just v) -> liftIO (print v) >> emptyQueue
             Nothing  -> return ()
-
