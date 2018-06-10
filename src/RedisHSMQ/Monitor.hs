@@ -9,6 +9,7 @@ module RedisHSMQ.Monitor
   ( runMonitor
 
     -- (do not import any of the following except if you are testing.)
+  , MonTimeout(..)
   , tidyUp
   , monitorLoop
   , hasTimedOut
@@ -19,10 +20,8 @@ import Control.Monad
 import Control.Monad.IO.Class
 import Database.Redis.IO
 import Data.Int
-import Data.List (foldl')
 import Data.String.Conversions
 import Data.Time
-import Data.UUID (UUID)
 import Data.Void
 import RedisHSMQ.Types as RT
 
@@ -58,9 +57,6 @@ seconds = (* 1000) . (* 1000)
 
 milliseconds :: Int -> Int
 milliseconds = (* 1000)
-
-(<$$>) :: (Functor f, Functor g) => (a -> b) -> f (g a) -> f (g b)
-(<$$>) = fmap . fmap
 
 
 ----------------------------------------------------------------------

@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 60b8ccad9108e70a8c246c17b1c166db2f459ec2860dc5ca5162471d8e5537c1
+-- hash: fac05e539edd67c855b30894c5f1289882975b327625a05fe7a58961eacb50b8
 
 name:           redis-hsmq
 version:        0.1
@@ -16,6 +16,42 @@ license-file:   LICENSE
 build-type:     Simple
 cabal-version:  >= 1.10
 
+library
+  exposed-modules:
+      Main
+      RedisHSMQ.IO
+      RedisHSMQ.Monitor
+      RedisHSMQ.Server
+      RedisHSMQ.Types
+  other-modules:
+      Paths_redis_hsmq
+  hs-source-dirs:
+      src
+  ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs
+  build-depends:
+      aeson
+    , async
+    , base
+    , bytestring
+    , bytestring-conversion
+    , containers
+    , exceptions
+    , http-client
+    , redis-io
+    , redis-resp
+    , servant
+    , servant-client
+    , servant-server
+    , stm
+    , string-conversions
+    , text
+    , time
+    , tinylog
+    , transformers
+    , uuid
+    , warp
+  default-language: Haskell2010
+
 executable toy-sp
   main-is: Main.hs
   hs-source-dirs:
@@ -27,6 +63,7 @@ executable toy-sp
     , base
     , bytestring
     , bytestring-conversion
+    , containers
     , exceptions
     , http-client
     , redis-io
@@ -62,11 +99,13 @@ test-suite spec
     , base
     , bytestring
     , bytestring-conversion
+    , containers
     , exceptions
     , hedgehog
     , hspec
     , hspec-discover
     , http-client
+    , redis-hsmq
     , redis-io
     , redis-resp
     , servant
@@ -81,5 +120,6 @@ test-suite spec
     , uuid
     , warp
   other-modules:
+      RedisHSMQ.MonitorSpec
       Paths_redis_hsmq
   default-language: Haskell2010

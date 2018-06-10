@@ -15,8 +15,9 @@ dependencies:
   - aeson
   - async
   - base
-  - bytestring-conversion
   - bytestring
+  - bytestring-conversion
+  - containers
   - exceptions
   - http-client
   - redis-io
@@ -33,9 +34,9 @@ dependencies:
   - uuid
   - warp
 
-#library:
-#  source-dirs:
-#    - src
+library:
+  source-dirs:
+    - src
 
 tests:
   spec:
@@ -47,6 +48,7 @@ tests:
       - hedgehog
       - hspec
       - hspec-discover
+      - redis-hsmq
 
 executables:
   toy-sp:
