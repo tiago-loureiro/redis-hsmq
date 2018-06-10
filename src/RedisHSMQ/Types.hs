@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveAnyClass     #-}
 {-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE OverloadedStrings  #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
 module RedisHSMQ.Types where
 
@@ -9,22 +9,22 @@ module RedisHSMQ.Types where
 --       sure that certain characters are not allowed, for instance,
 --       in queue names
 
-import Data.Aeson
-import Data.ByteString (ByteString)
-import Data.ByteString.Conversion
-import Data.ByteString.Lazy (fromStrict)
-import Data.UUID
-import Data.Text (Text)
-import Data.Time.Clock
-import Database.Redis.IO -- TODO: Types?
-import GHC.Generics (Generic)
-import Servant.API
+import           Data.Aeson
+import           Data.ByteString            (ByteString)
+import           Data.ByteString.Conversion
+import           Data.ByteString.Lazy       (fromStrict)
+import           Data.Text                  (Text)
+import           Data.Time.Clock
+import           Data.UUID
+import           Database.Redis.IO
+import           GHC.Generics               (Generic)
+import           Servant.API
 
-import qualified Data.Text.Encoding as TE
+import qualified Data.Text.Encoding         as TE
 
 newtype QueueName = QueueName Text deriving (Eq, Show, Generic, FromJSON, ToJSON)
 newtype QueueURL = QueueURL Text deriving (Eq, Show, Generic, FromJSON, ToJSON)
-newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Show, Generic)
+newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Ord, Show, Generic)
 newtype EndOfLife = EndOfLife UTCTime deriving (Eq, Show, Generic)
 
 instance FromHttpApiData QueueName where

@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: fe4770f3f302c5edbc3eba2d6fb61d3fc433f61cb1c81b24d4121013c1411a78
+-- hash: 4e0ff80bbd89faa2cce861b6b6cb86f6d518f61e78fa1615b74f9f39fd667c6e
 
 name:           redis-hsmq
 version:        0.1
@@ -34,6 +34,7 @@ library
     , base
     , bytestring
     , bytestring-conversion
+    , containers
     , exceptions
     , http-client
     , redis-io
@@ -68,6 +69,7 @@ executable toy-sp
     , base
     , bytestring
     , bytestring-conversion
+    , containers
     , exceptions
     , http-client
     , redis-io
@@ -100,6 +102,7 @@ test-suite spec
     , base
     , bytestring
     , bytestring-conversion
+    , containers
     , exceptions
     , hedgehog
     , hspec
@@ -107,6 +110,7 @@ test-suite spec
     , hspec-wai
     , http-client
     , http-types
+    , process
     , redis-hsmq
     , redis-io
     , redis-resp

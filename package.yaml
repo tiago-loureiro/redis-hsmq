@@ -17,6 +17,7 @@ dependencies:
   - base
   - bytestring-conversion
   - bytestring
+  - containers
   - exceptions
   - http-client
   - redis-io
@@ -50,6 +51,7 @@ tests:
       - hspec-wai
       - wai
       - http-types
+      - process
       #
       - redis-hsmq
 
