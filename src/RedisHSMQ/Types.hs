@@ -20,7 +20,7 @@ import qualified Data.Text.Encoding as TE
 
 newtype QueueName = QueueName ByteString deriving (Eq, Show)
 newtype QueueURL = QueueURL ByteString deriving (Eq, Show)
-newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Show, Generic)
+newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Ord, Show, Generic)
 newtype EndOfLife = EndOfLife UTCTime deriving (Eq, Show, Generic)
 
 instance FromHttpApiData QueueName where
@@ -37,8 +37,8 @@ toKey (QueueName n) = Key (fromStrict n)
 data Message = Message
   { mBody    :: Text
   , mId      :: UUID
-  , mTimeout ::  VisibilityTimeout
-  } deriving (Eq, Generic, Show)
+  , mTimeout :: VisibilityTimeout
+  } deriving (Eq, Ord, Generic, Show)
 
 deriving instance FromJSON Message
 deriving instance ToJSON Message
