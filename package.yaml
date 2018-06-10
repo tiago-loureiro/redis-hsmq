@@ -32,9 +32,9 @@ dependencies:
   - tinylog
   - warp
 
-#library:
-#  source-dirs:
-#    - src
+library:
+ source-dirs:
+   - src
 
 tests:
   spec:
@@ -46,6 +46,10 @@ tests:
       - hedgehog
       - hspec
       - hspec-discover
+      - hspec-wai
+      - wai
+      #
+      - redis-hsmq
 
 executables:
   toy-sp:
