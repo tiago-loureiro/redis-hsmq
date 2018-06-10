@@ -9,6 +9,7 @@ import RedisHSMQ.Types
 
 -- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html
 -- https://redis.io/commands/lpush
+-- TODO: this should create a fresh random Message Id and write it into Message, to guarantee probabilistic uniqueness.
 enqueue :: Monad m => QueueName -> Message -> Redis m Int64
 enqueue n m = lpush (toKey n) (m :| [])
 

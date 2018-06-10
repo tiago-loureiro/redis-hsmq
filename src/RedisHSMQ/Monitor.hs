@@ -15,6 +15,8 @@ import Data.Time
 import Data.Void
 import RedisHSMQ.Types as RT
 
+import qualified Data.UUID as UUID
+
 
 queueWait :: Key
 queueWait = "Q"
@@ -61,6 +63,6 @@ monitorLoop now = do
       pure ()
 
 hasTimedOut :: (Monad m, MonadIO m) => UTCTime -> Message -> Redis m Bool
-hasTimedOut now msg = (get . Key . cs . mId) msg >>= \case
+hasTimedOut now msg = (get . Key . cs . UUID.toString . mId) msg >>= \case
   Just (EndOfLife endOfLife) -> pure $ endOfLife < now  -- TODO: do we need to catch parse errors?
   Nothing -> pure False  -- TODO: retry, timeout.

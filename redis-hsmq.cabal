@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bc2ed52ca1c4be65810935cbe9d4db3e01badc3bc52307af79e9cec7bb349c50
+-- hash: 60b8ccad9108e70a8c246c17b1c166db2f459ec2860dc5ca5162471d8e5537c1
 
 name:           redis-hsmq
 version:        0.1
@@ -40,6 +40,7 @@ executable toy-sp
     , time
     , tinylog
     , transformers
+    , uuid
     , warp
   other-modules:
       RedisHSMQ.IO
@@ -77,6 +78,7 @@ test-suite spec
     , time
     , tinylog
     , transformers
+    , uuid
     , warp
   other-modules:
       Paths_redis_hsmq

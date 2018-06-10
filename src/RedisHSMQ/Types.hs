@@ -9,6 +9,7 @@ import Data.Aeson
 import Data.ByteString (ByteString)
 import Data.ByteString.Conversion
 import Data.ByteString.Lazy (fromStrict)
+import Data.UUID
 import Data.Text (Text)
 import Data.Time.Clock
 import Database.Redis.IO -- TODO: Types?
@@ -35,7 +36,7 @@ toKey (QueueName n) = Key (fromStrict n)
 
 data Message = Message
   { mBody    :: Text
-  , mId      :: Text
+  , mId      :: UUID
   , mTimeout ::  VisibilityTimeout
   } deriving (Eq, Generic, Show)
 

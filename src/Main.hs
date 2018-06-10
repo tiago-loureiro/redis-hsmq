@@ -13,6 +13,7 @@ import RedisHSMQ.Monitor
 import RedisHSMQ.Types as RT
 
 import qualified Control.Concurrent.Async as Async
+import qualified Data.UUID as UUID
 
 main :: IO ()
 main = do
@@ -28,8 +29,8 @@ runRandomClient :: Pool -> IO ()
 runRandomClient p = do
     let timeout = VisibilityTimeout 20
     ret <- try $ runRedis p $ commands $ do
-                _ <- enqueue dummyQueue (RT.Message "foo" "bar" timeout)
-                _ <- enqueue dummyQueue (RT.Message "foo" "baz" timeout)
+                _ <- enqueue dummyQueue (RT.Message "foo" UUID.nil timeout)
+                _ <- enqueue dummyQueue (RT.Message "foo" UUID.nil timeout)
                 emptyQueue
     case ret of
         Left  e -> print (e :: SomeException)
