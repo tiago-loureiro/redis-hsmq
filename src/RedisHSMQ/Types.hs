@@ -19,7 +19,8 @@ import qualified Data.Text.Encoding as TE
 
 newtype QueueName = QueueName ByteString deriving (Eq, Show)
 newtype QueueURL = QueueURL ByteString deriving (Eq, Show)
-newtype VisibilityTimeout = VisibilityTimeout Int deriving (Eq, Show, Generic)
+newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Show, Generic)
+newtype EndOfLife = EndOfLife UTCTime deriving (Eq, Show, Generic)
 
 instance FromHttpApiData QueueName where
     -- parseUrlPiece :: Text -> Either Text a
@@ -35,10 +36,17 @@ toKey (QueueName n) = Key (fromStrict n)
 data Message = Message
   { mBody    :: Text
   , mId      :: Text
+  , mTimeout ::  VisibilityTimeout
   } deriving (Eq, Generic, Show)
 
 deriving instance FromJSON Message
 deriving instance ToJSON Message
+
+deriving instance FromJSON VisibilityTimeout
+deriving instance ToJSON VisibilityTimeout
+
+deriving instance FromJSON EndOfLife
+deriving instance ToJSON EndOfLife
 
 instance FromByteString Message where
     parser = parser >>= maybe (fail "Invalid message") return . parseMessage
@@ -49,7 +57,8 @@ parseMessage = decode . fromStrict
 instance ToByteString Message where
     builder = builder . encode
 
-data InProcessMessage = InProcessMessage
-  { ipMessage :: Message
-  , ipExpires :: UTCTime
-  } deriving (Eq, Generic, Show)
+instance FromByteString EndOfLife where
+    parser = parser >>= maybe (fail "Invalid EndOfLife") return . decode . fromStrict
+
+instance ToByteString EndOfLife where
+    builder = builder . encode
