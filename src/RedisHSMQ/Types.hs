@@ -24,7 +24,7 @@ import qualified Data.Text.Encoding as TE
 
 newtype QueueName = QueueName Text deriving (Eq, Show, Generic, FromJSON, ToJSON)
 newtype QueueURL = QueueURL Text deriving (Eq, Show, Generic, FromJSON, ToJSON)
-newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Show, Generic)
+newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Ord, Show, Generic)
 newtype EndOfLife = EndOfLife UTCTime deriving (Eq, Show, Generic)
 
 instance FromHttpApiData QueueName where
