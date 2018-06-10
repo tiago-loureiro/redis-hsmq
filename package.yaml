@@ -49,6 +49,7 @@ tests:
       - hspec-discover
       - hspec-wai
       - wai
+      - http-types
       #
       - redis-hsmq
 

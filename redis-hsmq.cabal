@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f1eee242d64b62de840daefec9f3548ffee328ca0cf95042cbf89a0917c6abb6
+-- hash: fe4770f3f302c5edbc3eba2d6fb61d3fc433f61cb1c81b24d4121013c1411a78
 
 name:           redis-hsmq
 version:        0.1
@@ -106,6 +106,7 @@ test-suite spec
     , hspec-discover
     , hspec-wai
     , http-client
+    , http-types
     , redis-hsmq
     , redis-io
     , redis-resp
