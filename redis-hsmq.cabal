@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 61b084e962ef5723b63dfe3eef98391857a9aeff4c2702f8a454293a0791d04a
+-- hash: f1eee242d64b62de840daefec9f3548ffee328ca0cf95042cbf89a0917c6abb6
 
 name:           redis-hsmq
 version:        0.1
@@ -47,11 +47,18 @@ library
     , time
     , tinylog
     , transformers
+    , uuid
     , warp
   default-language: Haskell2010
 
 executable toy-sp
   main-is: Main.hs
+  other-modules:
+      RedisHSMQ.IO
+      RedisHSMQ.Monitor
+      RedisHSMQ.Server
+      RedisHSMQ.Types
+      Paths_redis_hsmq
   hs-source-dirs:
       src
   ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs
@@ -74,18 +81,16 @@ executable toy-sp
     , time
     , tinylog
     , transformers
+    , uuid
     , warp
-  other-modules:
-      RedisHSMQ.IO
-      RedisHSMQ.Monitor
-      RedisHSMQ.Server
-      RedisHSMQ.Types
-      Paths_redis_hsmq
   default-language: Haskell2010
 
 test-suite spec
   type: exitcode-stdio-1.0
   main-is: Spec.hs
+  other-modules:
+      RedisHSMQ.ServerSpec
+      Paths_redis_hsmq
   hs-source-dirs:
       test
   ghc-options: -j -O2 -Wall -Wno-redundant-constraints -fwarn-tabs -threaded -rtsopts -with-rtsopts=-N
@@ -113,9 +118,7 @@ test-suite spec
     , time
     , tinylog
     , transformers
+    , uuid
     , wai
     , warp
-  other-modules:
-      RedisHSMQ.ServerSpec
-      Paths_redis_hsmq
   default-language: Haskell2010

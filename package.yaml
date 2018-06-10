@@ -30,6 +30,7 @@ dependencies:
   - transformers
   - time
   - tinylog
+  - uuid
   - warp
 
 library:
