@@ -1,0 +1,29 @@
+# this is a clone of https://docs.haskellstack.org/en/stable/travis_ci/
+# alternative: https://github.com/harendra-kumar/packcheck
+
+sudo: false
+language: generic
+cache:
+  directories:
+  - $HOME/.stack
+addons:
+  apt:
+    packages:
+      - libgmp-dev
+
+before_install:
+- mkdir -p ~/.local/bin
+- export PATH=$HOME/.local/bin:$PATH
+- travis_retry curl -L https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+- docker pull redis:alpine  # https://hub.docker.com/_/redis/
+
+install:
+- stack --no-terminal --install-ghc test --fast --only-dependencies
+
+script:
+- export DOCKER_PID=`docker run --net=host -d redis:alpine`
+- stack --no-terminal test --fast --haddock --no-haddock-deps
+- docker rm -f ${DOCKER_PID}
+
+notifications:  # see https://docs.travis-ci.com/user/notifications
+  email: false
