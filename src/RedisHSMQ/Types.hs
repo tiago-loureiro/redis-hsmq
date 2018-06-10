@@ -5,6 +5,10 @@
 
 module RedisHSMQ.Types where
 
+-- TODO: Since we are storing JSON as bytestring, we need to make
+--       sure that certain characters are not allowed, for instance,
+--       in queue names
+
 import Data.Aeson
 import Data.ByteString (ByteString)
 import Data.ByteString.Conversion
@@ -34,6 +38,9 @@ instance FromHttpApiData QueueName where
 toKey :: QueueName -> Key
 toKey (QueueName n) = Key (fromStrict $ TE.encodeUtf8 n)
 
+toField :: QueueName -> Field
+toField (QueueName n) = fromStrict $ TE.encodeUtf8 n
+
 data QueueInfo = QueueInfo
   { qiName       :: QueueName
   , qiDefTimeout :: VisibilityTimeout
@@ -41,6 +48,15 @@ data QueueInfo = QueueInfo
 
 deriving instance FromJSON QueueInfo
 deriving instance ToJSON QueueInfo
+
+parseQueueInfo :: ByteString -> Maybe QueueInfo
+parseQueueInfo = decode . fromStrict
+
+instance FromByteString QueueInfo where
+    parser = parser >>= maybe (fail "Invalid QueueInfo") return . decode . fromStrict
+
+instance ToByteString QueueInfo where
+    builder = builder . encode
 
 data Message = Message
   { mBody    :: Text

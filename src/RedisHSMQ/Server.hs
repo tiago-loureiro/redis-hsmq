@@ -52,7 +52,13 @@ server = createQueue :<|> getMessage :<|> addMessage :<|> ackMessage
   where
     -- TODO: Add some parameters
     createQueue :: MonadIO m => Text -> RT.QueueInfo -> ReaderT State m RT.QueueURL
-    createQueue _ _qi = undefined
+    createQueue _ qi = do
+      State p <- ask
+      created <- runRedis p $ commands $ RIO.addQueueInfo qi
+      if created
+        then let RT.QueueName n = RT.qiName qi
+              in return $ RT.QueueURL n
+        else error "Already exists"
 
     -- TODO: fisx to add proper implementation
     getMessage :: MonadIO m => Text -> RT.QueueName -> ReaderT State m RT.Message
