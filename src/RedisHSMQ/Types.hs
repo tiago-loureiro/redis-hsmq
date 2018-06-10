@@ -18,21 +18,29 @@ import Servant.API
 
 import qualified Data.Text.Encoding as TE
 
-newtype QueueName = QueueName ByteString deriving (Eq, Show)
-newtype QueueURL = QueueURL ByteString deriving (Eq, Show)
-newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Ord, Show, Generic)
+newtype QueueName = QueueName Text deriving (Eq, Show, Generic, FromJSON, ToJSON)
+newtype QueueURL = QueueURL Text deriving (Eq, Show, Generic, FromJSON, ToJSON)
+newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Show, Generic)
 newtype EndOfLife = EndOfLife UTCTime deriving (Eq, Show, Generic)
 
 instance FromHttpApiData QueueName where
     -- parseUrlPiece :: Text -> Either Text a
-    parseUrlPiece = pure . QueueName . TE.encodeUtf8
+    parseUrlPiece = pure . QueueName
     -- parseHeader :: ByteString -> Either Text a
-    parseHeader = pure . QueueName
+    parseHeader = pure . QueueName . TE.decodeUtf8
     -- parseQueryParam :: Text -> Either Text a
     parseQueryParam = parseUrlPiece
 
 toKey :: QueueName -> Key
-toKey (QueueName n) = Key (fromStrict n)
+toKey (QueueName n) = Key (fromStrict $ TE.encodeUtf8 n)
+
+data QueueInfo = QueueInfo
+  { qiName       :: QueueName
+  , qiDefTimeout :: VisibilityTimeout
+  } deriving (Eq, Generic, Show)
+
+deriving instance FromJSON QueueInfo
+deriving instance ToJSON QueueInfo
 
 data Message = Message
   { mBody    :: Text

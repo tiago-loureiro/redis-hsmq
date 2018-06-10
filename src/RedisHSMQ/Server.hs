@@ -17,10 +17,12 @@ import qualified RedisHSMQ.Types as RT
 import qualified RedisHSMQ.IO    as RIO
 import qualified System.Logger   as Logger
 
+type CreateQueue = ReqBody '[JSON] RT.QueueInfo :> PostCreated '[JSON] RT.QueueURL
 type GetMessage = Get '[JSON] RT.Message
 type AddMessage = ReqBody '[JSON] RT.Message :> PostCreated '[JSON] ()
 type AckMessage = DeleteNoContent '[JSON] NoContent -- TODO: Do we really need a type here?
-type RedisHSMQAPI = (Capture "accountnr" Text :> Capture "queue" RT.QueueName :> GetMessage) :<|>
+type RedisHSMQAPI = (Capture "accountnr" Text :> CreateQueue) :<|>
+                    (Capture "accountnr" Text :> Capture "queue" RT.QueueName :> GetMessage) :<|>
                     (Capture "accountnr" Text :> Capture "queue" RT.QueueName :> AddMessage) :<|>
                     (Capture "accountnr" Text :> Capture "queue" RT.QueueName :> Capture "msgid" Text :> AckMessage)
 
@@ -46,8 +48,12 @@ stopServer :: State -> IO ()
 stopServer st = shutdown (redis st)
 
 server :: ServerT RedisHSMQAPI AppM
-server = getMessage :<|> addMessage :<|> ackMessage
+server = createQueue :<|> getMessage :<|> addMessage :<|> ackMessage
   where
+    -- TODO: Add some parameters
+    createQueue :: MonadIO m => Text -> RT.QueueInfo -> ReaderT State m RT.QueueURL
+    createQueue _ _qi = undefined
+
     -- TODO: fisx to add proper implementation
     getMessage :: MonadIO m => Text -> RT.QueueName -> ReaderT State m RT.Message
     getMessage _ qn = do
