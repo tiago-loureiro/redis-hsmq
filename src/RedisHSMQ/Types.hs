@@ -5,6 +5,10 @@
 
 module RedisHSMQ.Types where
 
+-- TODO: Since we are storing JSON as bytestring, we need to make
+--       sure that certain characters are not allowed, for instance,
+--       in queue names
+
 import Data.Aeson
 import Data.ByteString (ByteString)
 import Data.ByteString.Conversion
@@ -18,21 +22,41 @@ import Servant.API
 
 import qualified Data.Text.Encoding as TE
 
-newtype QueueName = QueueName ByteString deriving (Eq, Show)
-newtype QueueURL = QueueURL ByteString deriving (Eq, Show)
-newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Ord, Show, Generic)
+newtype QueueName = QueueName Text deriving (Eq, Show, Generic, FromJSON, ToJSON)
+newtype QueueURL = QueueURL Text deriving (Eq, Show, Generic, FromJSON, ToJSON)
+newtype VisibilityTimeout = VisibilityTimeout NominalDiffTime deriving (Eq, Show, Generic)
 newtype EndOfLife = EndOfLife UTCTime deriving (Eq, Show, Generic)
 
 instance FromHttpApiData QueueName where
     -- parseUrlPiece :: Text -> Either Text a
-    parseUrlPiece = pure . QueueName . TE.encodeUtf8
+    parseUrlPiece = pure . QueueName
     -- parseHeader :: ByteString -> Either Text a
-    parseHeader = pure . QueueName
+    parseHeader = pure . QueueName . TE.decodeUtf8
     -- parseQueryParam :: Text -> Either Text a
     parseQueryParam = parseUrlPiece
 
 toKey :: QueueName -> Key
-toKey (QueueName n) = Key (fromStrict n)
+toKey (QueueName n) = Key (fromStrict $ TE.encodeUtf8 n)
+
+toField :: QueueName -> Field
+toField (QueueName n) = fromStrict $ TE.encodeUtf8 n
+
+data QueueInfo = QueueInfo
+  { qiName       :: QueueName
+  , qiDefTimeout :: VisibilityTimeout
+  } deriving (Eq, Generic, Show)
+
+deriving instance FromJSON QueueInfo
+deriving instance ToJSON QueueInfo
+
+parseQueueInfo :: ByteString -> Maybe QueueInfo
+parseQueueInfo = decode . fromStrict
+
+instance FromByteString QueueInfo where
+    parser = parser >>= maybe (fail "Invalid QueueInfo") return . decode . fromStrict
+
+instance ToByteString QueueInfo where
+    builder = builder . encode
 
 data Message = Message
   { mBody    :: Text
